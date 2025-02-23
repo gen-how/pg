@@ -1,7 +1,3 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
@@ -10,31 +6,32 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// initCmd represents the init command
 var initCmd = &cobra.Command{
-	Use:   "init",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "init <project-name>",
+	Short: "Initialize a new project",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("init called")
+		projectName := args[0]
+		lang, _ := cmd.Flags().GetString("lang")
+		buildSys, _ := cmd.Flags().GetString("build-sys")
+		langStd, _ := cmd.Flags().GetString("std")
+
+		fmt.Printf("Creating %s project: %s\n", lang, projectName)
+		fmt.Printf("Using build system: %s\n", buildSys)
+		if langStd != "" {
+			fmt.Printf("Using language standard: %s\n", langStd)
+		}
+		// TODO: Implement project generation logic
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(initCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// initCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// initCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// Init-specific flags
+	initCmd.Flags().StringP("lang", "l", "c", "Set programming language (c/cpp/cu)")
+	initCmd.Flags().StringP("build-sys", "b", "cmake", "Set build system (cmake/make)")
+	initCmd.Flags().StringP("std", "s", "", "Set language standard (e.g., c11, c++17)")
+	initCmd.Flags().Bool("tests", true, "Include test directory")
+	initCmd.Flags().String("license", "MIT", "License type")
 }
